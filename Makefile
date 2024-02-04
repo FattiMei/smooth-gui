@@ -1,6 +1,6 @@
 CC      = gcc
 CCFLAGS = -Wall -Werror
-LIBS    = -lm -lglfw
+LIBS    = -lm -lglfw -ldl
 INCLUDE = -I ./include
 
 

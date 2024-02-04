@@ -1,16 +1,9 @@
 #include "shader.h"
+#include <stdio.h>
 
 
 #define MAX_LOG_LENGTH 1024
 static char log[MAX_LOG_LENGTH];
-
-
-struct Shader shader_create(GLenum type) {
-	return (struct Shader) {
-		  glCreateShader(type)
-		, type
-	};
-}
 
 
 GLint shader_load(
@@ -26,7 +19,7 @@ GLint shader_load(
 		return -1;
 	}
 
-	glShaderSource(S->id, 1, string, NULL);
+	glShaderSource(shader, 1, string, NULL);
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
@@ -36,7 +29,7 @@ GLint shader_load(
 		GLint info_len = 0;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_len);
 
-		if (info_len < ) {
+		if (info_len < MAX_LOG_LENGTH) {
 			glGetShaderInfoLog(shader, info_len, NULL, log);
 
 			fprintf(stderr, "%s\n", log);
