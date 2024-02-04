@@ -13,4 +13,6 @@ GLint shader_load(
 );
 
 
+GLint shader_load_from_file(GLenum type, const char *filename);
+
 #endif
