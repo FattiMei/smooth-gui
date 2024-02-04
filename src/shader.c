@@ -1,5 +1,6 @@
 #include "shader.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 #define MAX_LOG_LENGTH 1024
@@ -8,7 +9,7 @@ static char log[MAX_LOG_LENGTH];
 
 GLint shader_load(
 	  GLenum type
-	, const GLchar* const *string
+	, const GLchar* string
 	, const GLint *length
 ) {
 	GLuint shader = glCreateShader(type);
@@ -19,7 +20,9 @@ GLint shader_load(
 		return -1;
 	}
 
-	glShaderSource(shader, 1, string, length);
+
+	glShaderSource(shader, 1, &string, NULL);
+
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
@@ -45,13 +48,15 @@ GLint shader_load_from_file(GLenum type, const char *filename) {
 	GLuint shader;
 	FILE *fp = fopen(filename, "r");
 
+	fprintf(stderr, "[DEBUG]: opening file %s\n", filename);
+
 	if (fp == NULL) {
 		fprintf(stderr, "Error when opening file %s\n", filename);
 		return -1;
 	}
 
 	{
-		long numbytes = 0;
+		GLint numbytes = 0;
 		char *buffer = NULL;
 
 		// hack for finding the dimension of a file
@@ -59,14 +64,57 @@ GLint shader_load_from_file(GLenum type, const char *filename) {
 		numbytes = ftell(fp);
 		fseek(fp, 0L, SEEK_SET);
 
-		buffer = (char *) malloc(numbytes);
-		fread(buffer, sizeof(char), numbytes, fp);
+		fprintf(stderr, "[DEBUG]: file is %d bytes long\n", numbytes);
 
-		shader = shader_load(type, buffer, &numbytes);
+		buffer = (char *) malloc(numbytes + 1);
+		if (buffer == NULL) {
+			fprintf(stderr, "[ERROR]: failed allocation of %d bytes\n", numbytes);
+			return -1;
+		}
+
+		fread(buffer, sizeof(char), numbytes, fp);
+		buffer[numbytes] = '\0';
+
+		shader = shader_load(type, buffer, NULL);
 
 		free(buffer);
 		fclose(fp);
 	}
 
 	return shader;
+}
+
+
+GLint program_load(GLint vertex_shader, GLint fragment_shader) {
+	GLint program = glCreateProgram();
+	GLint linked;
+
+	if (program == 0) {
+		fprintf(stderr, "Error in creating program\n");
+		return -1;
+	}
+
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+
+	glGetProgramiv(program, GL_LINK_STATUS, &linked);
+
+	if (!linked) {
+		fprintf(stderr, "Linker error:\n");
+
+		GLint info_len = 0;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_len);
+
+		if (info_len < MAX_LOG_LENGTH) {
+			glGetProgramInfoLog(program, info_len, NULL, log);
+
+			fprintf(stderr, "%s\n", log);
+			glDeleteProgram(program);
+		}
+
+		return -1;
+	}
+
+	return program;
 }

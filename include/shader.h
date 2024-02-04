@@ -8,11 +8,13 @@
 
 GLint shader_load(
 	  GLenum type
-	, const GLchar* const *string
+	, const GLchar* string
 	, const GLint *length
 );
 
 
 GLint shader_load_from_file(GLenum type, const char *filename);
+
+GLint program_load(GLint vertex_shader, GLint fragment_shader);
 
 #endif
