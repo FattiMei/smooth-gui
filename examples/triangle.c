@@ -21,22 +21,26 @@ void resize_callback(GLFWwindow *window, int width, int height) {
 }
 
 
-GLbyte vertex_shader_src[] =
-	"attribute vec4 vPosition;\n"
-	"void main() {\n"
-	"	gl_Position = vPosition;\n"
-	"}\n";
+GLbyte vertex_shader_src[] = R"(
+	attribute vec4 vPosition;
+
+	void main() {
+		gl_Position = vPosition;
+	}
+)";
 
 
-GLbyte fragment_shader_src[] =
-	"precision mediump float;\n"
-	"uniform float time;\n"
-	"void main() {\n"
-	"	vec3 color = vec3(0.2, 0.5, 0.7);\n"
-	"	float m = (1.0 + sin(time)) / 2.0;\n"
-	""
-	"	gl_FragColor = vec4(m * color, 1.0);\n"
-	"}\n";
+GLbyte fragment_shader_src[] = R"(
+	precision mediump float;
+	uniform float time;
+
+	void main() {
+		vec3 color = vec3(0.2, 0.5, 0.7);
+		float m = (1.0 + sin(time)) / 2.0;
+
+		gl_FragColor = vec4(m * color, 1.0);
+	}
+)";
 
 
 int main(int argc, char *argv[]) {
