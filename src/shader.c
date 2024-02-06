@@ -21,7 +21,7 @@ GLint shader_load(
 	}
 
 
-	glShaderSource(shader, 1, &string, NULL);
+	glShaderSource(shader, 1, &string, length);
 
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
