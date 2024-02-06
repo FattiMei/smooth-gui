@@ -1,6 +1,6 @@
 CC      = gcc
 CCFLAGS = -Wall -Werror
-LIBS    = -lm -lglfw -ldl
+LIBS    = -lm -lglfw -lEGL -lGL
 INCLUDE = -I ./include
 
 
@@ -21,7 +21,7 @@ build/examples/%: $(objects) examples/%.c
 
 
 build/%.o: src/%.c
-	$(CC) $(INCLUDE) -c -o $@ $^
+	$(CC) $(INCLUDE) -c -o $@ $^ $(LIBS)
 
 
 .PHONY: clean

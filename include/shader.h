@@ -2,8 +2,8 @@
 #define __SHADER_H__
 
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
 
 
 GLint shader_load(

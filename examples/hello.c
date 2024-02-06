@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <glad/glad.h>
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
 #include <GLFW/glfw3.h>
 
 
@@ -53,11 +54,6 @@ int main() {
 
 	glfwMakeContextCurrent(window);
 
-	if (!gladLoadGLES2Loader((GLADloadproc) glfwGetProcAddress)) {
-		fprintf(stderr, "Failed to initialize GLAD\n");
-		glfwTerminate();
-		return -1;
-	}
 
 	glViewport(0, 0, width, height);
 	glfwSwapInterval(1);
