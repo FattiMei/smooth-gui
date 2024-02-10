@@ -14,6 +14,9 @@ int window_width = DEFAULT_WINDOW_WIDTH;
 int window_height = DEFAULT_WINDOW_HEIGHT;
 
 
+struct Slider slider = {0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT};
+
+
 void error_callback(int error, const char* description) {
 	fprintf(stderr, "GLFW Error: %s\n", description);
 }
@@ -28,6 +31,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void resize_callback(GLFWwindow *window, int width, int height) {
 	window_width = width;
 	window_height = height;
+
+
+	slider.w = width;
+	slider.h = height;
+
 
 	glViewport(0, 0, width, height);
 }
@@ -69,7 +77,6 @@ int main(int argc, char *argv[]) {
 	slider_init();
 
 
-	struct Slider slider = {0, 0, window_width, window_height};
 	double xpos, ypos;
 
 	while (!glfwWindowShouldClose(window)) {

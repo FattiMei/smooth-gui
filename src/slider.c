@@ -62,6 +62,11 @@ void slider_init() {
 	glBindAttribLocation(slider_program, 0, "vPosition");
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
 	glEnableVertexAttribArray(0);
+
+
+	u_state           = glGetUniformLocation(slider_program, "state");
+	u_sliderPosition  = glGetUniformLocation(slider_program, "sliderPosition");
+	u_sliderDimension = glGetUniformLocation(slider_program, "sliderDimension");
 }
 
 
