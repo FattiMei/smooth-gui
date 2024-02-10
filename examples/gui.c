@@ -66,6 +66,9 @@ int main(int argc, char *argv[]) {
 	glfwSwapInterval(1);
 
 
+	slider_init();
+
+
 	struct Slider slider = {0, 0, window_width, window_height};
 	double xpos, ypos;
 
@@ -73,8 +76,8 @@ int main(int argc, char *argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glfwGetCursorPos(window, &xpos, &ypos);
-		slider_update(&S, xpos);
-		slider_render(&S);
+		slider_update(&slider, xpos);
+		slider_render(&slider);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
