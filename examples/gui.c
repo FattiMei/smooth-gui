@@ -15,7 +15,14 @@ int window_height = DEFAULT_WINDOW_HEIGHT;
 
 
 #define SLIDER_MARGIN 5
-struct Slider slider = {SLIDER_MARGIN, SLIDER_MARGIN, DEFAULT_WINDOW_WIDTH - 2 * SLIDER_MARGIN, 20};
+#define SLIDER_HEIGHT 20
+
+
+struct Slider sliders[] = {
+	{SLIDER_MARGIN, SLIDER_MARGIN, DEFAULT_WINDOW_WIDTH - 2 * SLIDER_MARGIN, SLIDER_HEIGHT},
+	{SLIDER_MARGIN, SLIDER_MARGIN * 2 + SLIDER_HEIGHT, DEFAULT_WINDOW_WIDTH - 2 * SLIDER_MARGIN, SLIDER_HEIGHT},
+	{SLIDER_MARGIN, SLIDER_MARGIN * 3 + 2 * SLIDER_HEIGHT, DEFAULT_WINDOW_WIDTH - 2 * SLIDER_MARGIN, SLIDER_HEIGHT}
+};
 
 
 void error_callback(int error, const char* description) {
@@ -34,7 +41,9 @@ void resize_callback(GLFWwindow *window, int width, int height) {
 	window_height = height;
 
 
-	slider.w = width - 2 * SLIDER_MARGIN;
+	for (int i = 0; i < 3; ++i) {
+		sliders[i].w = width - 2 * SLIDER_MARGIN;
+	}
 
 
 	glViewport(0, 0, width, height);
@@ -53,27 +62,40 @@ void mouse_callback(GLFWwindow *window, int button, int action, int mods) {
 			ypos = window_height - ypos;
 
 
-			if (
-					(xpos >= slider.x)
-					&& (xpos <= slider.x + slider.w)
-					&& (ypos >= slider.y)
-					&& (ypos <= slider.y + slider.h)) {
+			for (int i = 0; i < 3; ++i) {
+				if (
+						(xpos >= sliders[i].x)
+						&& (xpos <= sliders[i].x + sliders[i].w)
+						&& (ypos >= sliders[i].y)
+						&& (ypos <= sliders[i].y + sliders[i].h)) {
 
-				slider_update(&slider, xpos);
-				slider_render(&slider);
+					slider_update(&sliders[i], xpos);
+					slider_render(&sliders[i]);
 
-				slider.focused = true;
+					sliders[i].focused = true;
+					break;
+				}
 			}
-
 		}
 		else if (action == GLFW_RELEASE) {
-			slider.focused = false;
+			for (int i = 0; i < 3; ++i) {
+				sliders[i].focused = false;
+			}
 		}
 	}
 }
 
 
 int main(int argc, char *argv[]) {
+	const GLfloat vertices[] = {
+		-1.0f, -1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		1.0f,  1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+	};
+
 	glfwInit();
 
 	// find the possible window hints at www.glfw.org/docs/latest/window.html
@@ -114,14 +136,18 @@ int main(int argc, char *argv[]) {
 
 
 	while (!glfwWindowShouldClose(window)) {
+		glClearColor(sliders[0].state, sliders[1].state, sliders[2].state, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		if (slider.focused) {
-			glfwGetCursorPos(window, &xpos, &ypos);
-			slider_update(&slider, xpos);
+		for (int i = 0; i < 3; ++i) {
+			if (sliders[i].focused) {
+				glfwGetCursorPos(window, &xpos, &ypos);
+				slider_update(&sliders[i], xpos);
+			}
+
+			slider_render(&sliders[i]);
 		}
 
-		slider_render(&slider);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
