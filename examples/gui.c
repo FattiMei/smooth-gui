@@ -42,24 +42,32 @@ void resize_callback(GLFWwindow *window, int width, int height) {
 
 
 void mouse_callback(GLFWwindow *window, int button, int action, int mods) {
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		// point-rect collision
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		if (action == GLFW_PRESS) {
+			// point-rect collision
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
 
 
-		// mouse coordinate system is different than viewport coordinate system
-		ypos = window_height - ypos;
+			// mouse coordinate system is different than viewport coordinate system
+			ypos = window_height - ypos;
 
 
-		if (
-			   (xpos >= slider.x)
-			&& (xpos <= slider.x + slider.w)
-			&& (ypos >= slider.y)
-			&& (ypos <= slider.y + slider.h)) {
+			if (
+					(xpos >= slider.x)
+					&& (xpos <= slider.x + slider.w)
+					&& (ypos >= slider.y)
+					&& (ypos <= slider.y + slider.h)) {
 
-			slider_update(&slider, xpos);
-			slider_render(&slider);
+				slider_update(&slider, xpos);
+				slider_render(&slider);
+
+				slider.focused = true;
+			}
+
+		}
+		else if (action == GLFW_RELEASE) {
+			slider.focused = false;
 		}
 	}
 }
@@ -102,13 +110,18 @@ int main(int argc, char *argv[]) {
 	slider_init();
 
 
+	double xpos, ypos;
+
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		if (slider.focused) {
+			glfwGetCursorPos(window, &xpos, &ypos);
+			slider_update(&slider, xpos);
+		}
 
 		slider_render(&slider);
-
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

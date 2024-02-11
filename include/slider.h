@@ -2,12 +2,17 @@
 #define __SLIDER_H__
 
 
+#include <stdbool.h>
+
+
 struct Slider {
 	// dimensioni del rettangolo che è lo slider
 	unsigned int x, y, w, h;
 
 	// in [0, 1]
 	float state;
+
+	bool focused;
 };
 
 

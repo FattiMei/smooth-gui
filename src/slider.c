@@ -1,6 +1,7 @@
 #include "slider.h"
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
+#include <GLFW/glfw3.h>
 #include "shader.h"
 
 
@@ -30,7 +31,6 @@ GLbyte slider_vertex_shader_src[] = R"(
 
 
 // @TODO: add better looks to the slider
-// @TODO: something is off with the right side of the slider
 GLbyte slider_fragment_shader_src[] = R"(
 	precision mediump float;
 
@@ -39,7 +39,7 @@ GLbyte slider_fragment_shader_src[] = R"(
 	uniform vec2 sliderDimension;
 
 	#define BACKGROUND_COLOR vec4(0.1, 0.1, 0.1, 1.0)
-	#define FOREGROUND_COLOR vec4(0.5, 0.2, 0.6, 1.0)
+	#define FOREGROUND_COLOR vec4(0.5, 0.5, 0.5, 1.0)
 
 	void main() {
 		float cutoff = sliderPosition.x + state * sliderDimension.x;
@@ -73,7 +73,7 @@ void slider_init() {
 
 
 void slider_update(struct Slider *S, float xpos) {
-	float newstate = (xpos - S->x) / (float) S->w;
+	float newstate = (xpos - S->x) / (double) S->w;
 
 	if (newstate < 0.0f) newstate = 0.0f;
 	else if (newstate > 1.0f) newstate = 1.0f;
