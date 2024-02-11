@@ -14,7 +14,8 @@ int window_width = DEFAULT_WINDOW_WIDTH;
 int window_height = DEFAULT_WINDOW_HEIGHT;
 
 
-struct Slider slider = {0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT};
+#define SLIDER_MARGIN 5
+struct Slider slider = {SLIDER_MARGIN, SLIDER_MARGIN, DEFAULT_WINDOW_WIDTH - 2 * SLIDER_MARGIN, 20};
 
 
 void error_callback(int error, const char* description) {
@@ -33,11 +34,34 @@ void resize_callback(GLFWwindow *window, int width, int height) {
 	window_height = height;
 
 
-	slider.w = width;
-	slider.h = height;
+	slider.w = width - 2 * SLIDER_MARGIN;
 
 
 	glViewport(0, 0, width, height);
+}
+
+
+void mouse_callback(GLFWwindow *window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		// point-rect collision
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+
+
+		// mouse coordinate system is different than viewport coordinate system
+		ypos = window_height - ypos;
+
+
+		if (
+			   (xpos >= slider.x)
+			&& (xpos <= slider.x + slider.w)
+			&& (ypos >= slider.y)
+			&& (ypos <= slider.y + slider.h)) {
+
+			slider_update(&slider, xpos);
+			slider_render(&slider);
+		}
+	}
 }
 
 
@@ -67,6 +91,7 @@ int main(int argc, char *argv[]) {
 	glfwSetErrorCallback(error_callback);
 	glfwSetFramebufferSizeCallback(window, resize_callback);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_callback);
 
 	glfwMakeContextCurrent(window);
 
@@ -77,14 +102,13 @@ int main(int argc, char *argv[]) {
 	slider_init();
 
 
-	double xpos, ypos;
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glfwGetCursorPos(window, &xpos, &ypos);
-		slider_update(&slider, xpos);
+
 		slider_render(&slider);
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

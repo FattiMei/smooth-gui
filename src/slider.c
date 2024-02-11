@@ -29,14 +29,16 @@ GLbyte slider_vertex_shader_src[] = R"(
 )";
 
 
+// @TODO: add better looks to the slider
+// @TODO: something is off with the right side of the slider
 GLbyte slider_fragment_shader_src[] = R"(
 	precision mediump float;
 
+	uniform float state;
 	uniform vec2 sliderPosition;
 	uniform vec2 sliderDimension;
-	uniform float state;
 
-	#define BACKGROUND_COLOR vec4(0.0, 0.0, 0.0, 1.0)
+	#define BACKGROUND_COLOR vec4(0.1, 0.1, 0.1, 1.0)
 	#define FOREGROUND_COLOR vec4(0.5, 0.2, 0.6, 1.0)
 
 	void main() {
@@ -81,7 +83,7 @@ void slider_update(struct Slider *S, float xpos) {
 
 
 void slider_render(struct Slider *S) {
-	glViewport(S->x, S->y, S->x + S->w, S->y + S->h);
+	glViewport(S->x, S->y, S->w, S->h);
 
 	glUseProgram(slider_program);
 
