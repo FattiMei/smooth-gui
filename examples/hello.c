@@ -4,23 +4,42 @@
 #include <GLFW/glfw3.h>
 
 
-void log_on_error(int error, const char *description) {
+void error_callback(int error, const char* description) {
 	fprintf(stderr, "GLFW error (code %d): %s\n", error, description);
 }
 
 
-void error_callback(int error, const char* description) {
-	fprintf(stderr, "GLFW Error: %s\n", description);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	printf("key %d (scancode %d) ", key, scancode);
+
+	switch (action) {
+		case GLFW_PRESS  : printf("pressed\n") ; break;
+		case GLFW_REPEAT : printf("repeated\n"); break;
+		case GLFW_RELEASE: printf("released\n"); break;
+	}
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
 }
 
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+	switch (button) {
+		case GLFW_MOUSE_BUTTON_LEFT  : printf("mouse button left ") ; break;
+		case GLFW_MOUSE_BUTTON_RIGHT : printf("mouse button right "); break;
+	}
+
+	switch (action) {
+		case GLFW_PRESS  : printf("pressed\n") ; break;
+		case GLFW_RELEASE: printf("released\n"); break;
+	}
 }
 
 
 void resize_callback(GLFWwindow *window, int width, int height) {
+	printf("window resized to (%d, %d)\n", width, height);
+
 	glViewport(0, 0, width, height);
 }
 
@@ -66,39 +85,36 @@ const int default_window_hints[DEFAULT_WINDOW_HINTS_COUNT][2] = {
 };
 
 
+#define DEFAULT_WINDOW_WIDTH  800
+#define DEFAULT_WINDOW_HEIGHT 600
+
+
 int main() {
 	GLFWwindow *window = NULL;
-	const int width  = 800;
-	const int height = 600;
 
-	// the initialization for any glfw application
 	glfwInit();
+	glfwSetErrorCallback(error_callback);
 
-	// if any glfw error occurs we can catch it with this callback
-	glfwSetErrorCallback(log_on_error);
-
-	// giving hints about window creation, the names are self-explanatory
-	for (int i = 0; i < DEFAULT_WINDOW_HINTS_COUNT; ++i) {
-		glfwWindowHint(default_window_hints[i][0], default_window_hints[i][1]);
-	}
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	// if any errors occur, it's probably the window hints
-	window = glfwCreateWindow(width, height, "hello", NULL, NULL);
-
+	// and the callback we set up above will inform us
+	window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, "hello", NULL, NULL);
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
 	}
-
-	glfwSetFramebufferSizeCallback(window, resize_callback);
-	glfwSetKeyCallback(window, key_callback);
-
-
 	glfwMakeContextCurrent(window);
-
-
-	glViewport(0, 0, width, height);
 	glfwSwapInterval(1);
+
+	glfwSetKeyCallback            (window, key_callback);
+	glfwSetMouseButtonCallback    (window, mouse_button_callback);
+	glfwSetFramebufferSizeCallback(window, resize_callback);
+
+	glViewport(0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
 	while (!glfwWindowShouldClose(window)) {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
