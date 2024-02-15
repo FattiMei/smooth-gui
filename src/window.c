@@ -1,6 +1,7 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
+#include <assert.h>
 
 
 struct WindowHint {
@@ -103,65 +104,46 @@ int window_init(const char *title, int width, int height) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
+
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
 	}
 
 	glfwMakeContextCurrent(window);
-
-	glfwSetKeyCallback            (window, key_callback);
-	glfwSetMouseButtonCallback    (window, mouse_button_callback);
-	glfwSetFramebufferSizeCallback(window, resize_callback);
-
 	glfwSwapInterval(1);
 
 	return 0;
 }
 
 
-// int window_init_with_hints(const char *title, int width, int height);
-int  window_should_close();
-void window_swap_buffers();
-void window_poll_events();
-void window_terminate();
-
-void windowInit(const char *title, int width, int height) {
-	glfwInit();
-
-	for (int i = 0; i < sizeof(default_window_hints) / sizeof(struct WindowHint); ++i) {
-		glfwWindowHint(default_window_hints[i].name, default_window_hints[i].value);
-	}
-
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
-
-	// maybe we need a centralized logger for glfw related errors
-	if (window == NULL) {
-		const char *error_description = NULL;
-
-		fprintf(stderr, "[GLFW error]: ");
-		glfwGetError(&error_description);
-		fprintf(stderr, "%s", error_description);
-
-		windowTerminate();
-	}
-	else {
-		glfwMakeContextCurrent(window);
-	}
+int window_init_with_hints(const char *title, int width, int height) {
+	assert(0 && "not yet implemented");
 }
 
 
-int windowShouldClose() {
+void window_set_callbacks() {
+	glfwSetKeyCallback            (window, key_callback);
+	glfwSetMouseButtonCallback    (window, mouse_button_callback);
+	glfwSetFramebufferSizeCallback(window, resize_callback);
+}
+
+
+int window_should_close() {
 	return glfwWindowShouldClose(window);
 }
 
 
-int windowSwapBuffersPollEvents() {
+void window_swap_buffers() {
 	glfwSwapBuffers(window);
+}
+
+
+void window_poll_events() {
 	glfwPollEvents();
 }
 
 
-void windowTerminate() {
+void window_close() {
 	glfwTerminate();
 }
