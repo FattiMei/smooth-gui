@@ -2,8 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <assert.h>
+#include "experiment.h"
 
 
+/*
 struct WindowHint {
 	int name;
 	int value;
@@ -48,6 +50,7 @@ static const struct WindowHint default_window_hints[] = {
 	{GLFW_OPENGL_DEBUG_CONTEXT	, GLFW_FALSE			},
 	{GLFW_OPENGL_PROFILE		, GLFW_OPENGL_ANY_PROFILE	}
 };
+*/
 
 
 static GLFWwindow *window = NULL;
@@ -87,9 +90,7 @@ static void mouse_button_callback(GLFWwindow *window, int button, int action, in
 
 
 static void resize_callback(GLFWwindow *window, int width, int height) {
-	printf("window resized to (%d, %d)\n", width, height);
-
-	glViewport(0, 0, width, height);
+	experiment_resize(width, height);
 }
 
 
