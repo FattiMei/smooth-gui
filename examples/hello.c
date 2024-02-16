@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <GLES2/gl2.h>
-#include <EGL/egl.h>
 #include <GLFW/glfw3.h>
 #include "window.h"
 

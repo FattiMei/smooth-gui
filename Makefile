@@ -16,10 +16,6 @@ targets    += $(objects)
 all: $(targets)
 
 
-build/examples/hello: examples/hello.c
-	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
-
-
 build/examples/gui: build/shader.o build/slider.o examples/gui.c
 	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
 

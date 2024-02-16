@@ -16,24 +16,21 @@ The user program opens an opengl context and renders the plot of the experiment 
  * on CPU and its results would be shared with GPU buffers
  * on GPU using special shaders
 
-the latter choice could be better for performance reasons
+To interact with the parameters of the computation we are going to use Dear ImGui. I tried to make some sliders but the whole layout and rendering of the UI elements is hard and I prefer to focus on the experiments at the moment.
 
 
 ## What is the product
-At the moment I'm evaluating two options:
- * a collection of examples that cover the frequent use cases, with everything exposed
- * an stb like header file with wrapper functions
+A collection of files to copy into your project.
 
 
 ## Byproducts
  * learn opengl
- * experiment with immediate mode ui
- * produce software with a long lifespan
+ * experiment with immediate mode ui (Dear ImGui)
 
 
 ## Dependencies
  * glfw3
- * glad
+ * ImGui
 
 
 ## First steps in development

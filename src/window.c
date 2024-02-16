@@ -62,12 +62,17 @@ static void error_callback(int error, const char* description) {
 
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	printf("key %d (scancode %d) ", key, scancode);
+	switch (key) {
+		case GLFW_KEY_W: break;
+		case GLFW_KEY_A: break;
+		case GLFW_KEY_S: break;
+		case GLFW_KEY_D: break;
+	}
 
 	switch (action) {
-		case GLFW_PRESS  : printf("pressed\n") ; break;
-		case GLFW_REPEAT : printf("repeated\n"); break;
-		case GLFW_RELEASE: printf("released\n"); break;
+		case GLFW_PRESS  : break;
+		case GLFW_REPEAT : break;
+		case GLFW_RELEASE: break;
 	}
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -78,13 +83,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
 	switch (button) {
-		case GLFW_MOUSE_BUTTON_LEFT  : printf("mouse button left ") ; break;
-		case GLFW_MOUSE_BUTTON_RIGHT : printf("mouse button right "); break;
+		case GLFW_MOUSE_BUTTON_LEFT  : break;
+		case GLFW_MOUSE_BUTTON_RIGHT : break;
 	}
 
 	switch (action) {
-		case GLFW_PRESS  : printf("pressed\n") ; break;
-		case GLFW_RELEASE: printf("released\n"); break;
+		case GLFW_PRESS  : break;
+		case GLFW_RELEASE: break;
 	}
 }
 
