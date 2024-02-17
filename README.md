@@ -16,7 +16,7 @@ The user program opens an opengl context and renders the plot of the experiment 
  * on CPU and its results would be shared with GPU buffers
  * on GPU using special shaders
 
-To interact with the parameters of the computation we are going to use Dear ImGui. I tried to make some sliders but the whole layout and rendering of the UI elements is hard and I prefer to focus on the experiments at the moment.
+The interaction with the parameters of the experiment is still an unsolved problem, for the time being I'm using some simple custom sliders (see `gui` experiment)
 
 
 ## What is the product
@@ -25,17 +25,24 @@ A collection of files to copy into your project.
 
 ## Byproducts
  * learn opengl
- * experiment with immediate mode ui (Dear ImGui)
+ * experiment with immediate mode ui
 
 
 ## Dependencies
  * glfw3
- * ImGui
 
 
 ## First steps in development
  * makefile
  * follow the introductive tutorial in [learn opengl](https://learnopengl.com)
+
+
+## Direction of the project
+Doing UI is hard, especially if you want to be efficient with the drawing calls. But solving UI is not everything, what about the rendering of the experiment? Also scientific plotting is hard (who would have thought?).
+
+This project will provide a simple API for simple visualization tasks and opengl experiments. I've come to the realization that for actual scientific research the following tools are more appropriate:
+ * python + matplotlib
+ * Cpp + ImGui
 
 
 ## Contributors

@@ -4,8 +4,10 @@ LIBS    = -lm -lglfw -lEGL -lGL
 INCLUDE = -I ./include
 
 
-examples   = $(wildcard examples/*.c)
-sources    = $(wildcard src/*.c)
+sources        = $(wildcard src/*.c)
+examples       = $(wildcard examples/*.c)
+
+
 objects    = $(patsubst src/%.c,build/%.o,$(sources))
 
 
@@ -20,7 +22,11 @@ build/examples/gui: build/shader.o build/slider.o examples/gui.c
 	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
 
 
-build/examples/%: $(objects) examples/%.c
+build/examples/hello: build/window.o examples/hello.c
+	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
+
+
+build/examples/triangle: build/window.o build/shader.o examples/triangle.c
 	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
 
 
