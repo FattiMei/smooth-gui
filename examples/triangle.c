@@ -11,45 +11,59 @@ GLint program;
 
 
 GLchar vertex_shader_src[] = R"(
-	attribute vec4 position;
+	attribute vec3 vposition;
+	attribute vec3 vcolor;
+
+	varying vec3 color;
 
 	void main() {
-		gl_Position = position;
+		gl_Position = vec4(vposition, 1.0);
+		color = vcolor;
 	}
 )";
 
 
 GLchar fragment_shader_src[] = R"(
 	precision mediump float;
-	uniform float time;
+	varying vec3 color;
 
 	void main() {
-		vec3 color = vec3(0.2, 0.5, 0.7);
-		float m = (1.0 + sin(time)) / 2.0;
-
-		gl_FragColor = vec4(m * color, 1.0);
+		gl_FragColor = vec4(color, 1.0);
 	}
 )";
 
 
 void experiment_init(int width, int height) {
-	static const float vertices[] =  {
+	static const float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
 		 0.0f,  0.5f, 0.0f
 	};
 
-	glViewport(0, 0, width, height);
+	static const float colors[] = {
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+	};
+
 
 	program = program_load(vertex_shader_src, fragment_shader_src);
 
-	glBindAttribLocation(program, 0, "position");
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
-	glEnableVertexAttribArray(0);
+	GLint position_location = glGetAttribLocation(program, "vposition");
+	GLint color_location    = glGetAttribLocation(program, "vcolor");
+
+	glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+	glEnableVertexAttribArray(position_location);
+	glVertexAttribPointer(color_location, 3, GL_FLOAT, GL_FALSE, 0, colors);
+	glEnableVertexAttribArray(color_location);
+
+
+	glViewport(0, 0, width, height);
 }
 
 
 void experiment_render() {
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(program);
