@@ -41,9 +41,7 @@ void experiment_init(int width, int height) {
 
 	glViewport(0, 0, width, height);
 
-	GLint vertex_shader   = shader_load(GL_VERTEX_SHADER, vertex_shader_src, NULL);
-	GLint fragment_shader = shader_load(GL_FRAGMENT_SHADER, fragment_shader_src, NULL);
-	program               = program_load(vertex_shader, fragment_shader);
+	program = program_load(vertex_shader_src, fragment_shader_src);
 
 	glBindAttribLocation(program, 0, "position");
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);

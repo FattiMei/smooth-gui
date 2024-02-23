@@ -85,7 +85,9 @@ GLint shader_load_from_file(GLenum type, const char *filename) {
 }
 
 
-GLint program_load(GLint vertex_shader, GLint fragment_shader) {
+GLint program_load(const GLchar *vertex_shader_src, const GLchar *fragment_shader_src) {
+	GLint vertex_shader   = shader_load(GL_VERTEX_SHADER  , vertex_shader_src  , NULL);
+	GLint fragment_shader = shader_load(GL_FRAGMENT_SHADER, fragment_shader_src, NULL);
 	GLint program = glCreateProgram();
 	GLint linked;
 
@@ -115,6 +117,8 @@ GLint program_load(GLint vertex_shader, GLint fragment_shader) {
 
 		return -1;
 	}
+
+	// @TODO: delete the shaders
 
 	return program;
 }

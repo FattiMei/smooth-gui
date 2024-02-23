@@ -55,10 +55,7 @@ GLchar slider_fragment_shader_src[] = R"(
 
 
 void slider_init() {
-	GLint vertex_shader = shader_load(GL_VERTEX_SHADER, slider_vertex_shader_src, NULL);
-	GLint fragment_shader = shader_load(GL_FRAGMENT_SHADER, slider_fragment_shader_src, NULL);
-
-	slider_program = program_load(vertex_shader, fragment_shader);
+	slider_program = program_load(slider_vertex_shader_src, slider_fragment_shader_src);
 
 	// @TODO: is there a way to not send vertices positions in GLES2 when drawing the entire viewport?
 	glBindAttribLocation(slider_program, 0, "vPosition");
