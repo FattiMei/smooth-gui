@@ -21,7 +21,7 @@ static const GLfloat vertices[] = {
 };
 
 
-GLbyte slider_vertex_shader_src[] = R"(
+GLchar slider_vertex_shader_src[] = R"(
 	attribute vec4 vPosition;
 
 	void main() {
@@ -31,7 +31,7 @@ GLbyte slider_vertex_shader_src[] = R"(
 
 
 // @TODO: add better looks to the slider
-GLbyte slider_fragment_shader_src[] = R"(
+GLchar slider_fragment_shader_src[] = R"(
 	precision mediump float;
 
 	uniform float state;
