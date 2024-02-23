@@ -1,18 +1,10 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
-#include <assert.h>
 #include "experiment.h"
 
 
-/*
-struct WindowHint {
-	int name;
-	int value;
-};
-
-
-static const struct WindowHint default_window_hints[] = {
+static const int default_window_hints[][2] = {
 	{GLFW_RESIZABLE			, GLFW_TRUE			},
 	{GLFW_VISIBLE			, GLFW_TRUE			},
 	{GLFW_DECORATED			, GLFW_TRUE			},
@@ -43,14 +35,13 @@ static const struct WindowHint default_window_hints[] = {
 	{GLFW_CLIENT_API		, GLFW_OPENGL_ES_API		},
 	{GLFW_CONTEXT_CREATION_API	, GLFW_EGL_CONTEXT_API		},
 	{GLFW_CONTEXT_VERSION_MAJOR	, 2				},
-	{GLFW_CONTEXT_VERSION_MINOR	, 2				},
+	{GLFW_CONTEXT_VERSION_MINOR	, 0				},
 	{GLFW_CONTEXT_ROBUSTNESS	, GLFW_NO_ROBUSTNESS		},
 	{GLFW_CONTEXT_RELEASE_BEHAVIOR	, GLFW_ANY_RELEASE_BEHAVIOR	},
 	{GLFW_OPENGL_FORWARD_COMPAT	, GLFW_FALSE			},
 	{GLFW_OPENGL_DEBUG_CONTEXT	, GLFW_FALSE			},
 	{GLFW_OPENGL_PROFILE		, GLFW_OPENGL_ANY_PROFILE	}
 };
-*/
 
 
 static GLFWwindow *window = NULL;
@@ -103,14 +94,9 @@ int window_init(const char *title, int width, int height) {
 	glfwInit();
 
 	glfwSetErrorCallback(error_callback);
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	window_set_hints(default_window_hints, sizeof(default_window_hints) / (2 * sizeof(int)));
 
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
-
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
@@ -123,8 +109,10 @@ int window_init(const char *title, int width, int height) {
 }
 
 
-int window_init_with_hints(const char *title, int width, int height) {
-	assert(0 && "not yet implemented");
+void window_set_hints(const int hints[][2], int n) {
+	for (int i = 0; i < n; ++i) {
+		glfwWindowHint(hints[i][0], hints[i][1]);
+	}
 }
 
 
