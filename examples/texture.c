@@ -14,16 +14,15 @@
 
 GLuint texture;
 GLint program;
-GLint u_texture;
 
 
 const float vertices[] = {
 	-1.0f, -1.0f, 0.0f,
 	-1.0f,  1.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
+	 1.0f, -1.0f, 0.0f,
 	-1.0f,  1.0f, 0.0f,
-	1.0f,  1.0f, 0.0f,
-	1.0f, -1.0f, 0.0f
+	 1.0f,  1.0f, 0.0f,
+	 1.0f, -1.0f, 0.0f
 };
 
 
@@ -37,7 +36,7 @@ const float texture_vertices[] = {
 };
 
 
-unsigned char texture_buffer[TEXTURE_WIDTH * TEXTURE_HEIGHT * 3];
+unsigned char texture_buffer[TEXTURE_WIDTH][TEXTURE_HEIGHT][3];
 
 
 GLchar vertex_shader_src[] = R"(
@@ -83,7 +82,17 @@ void experiment_init(int width, int height) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	memset(texture_buffer, 200, TEXTURE_WIDTH * TEXTURE_HEIGHT * 3);
+	// texture generation
+	for (int i = 0; i < TEXTURE_HEIGHT; ++i) {
+		for (int j = 0; j < TEXTURE_WIDTH; ++j) {
+			const char p = (char) (rand() % 256);
+
+			texture_buffer[i][j][0] = p;
+			texture_buffer[i][j][1] = p;
+			texture_buffer[i][j][2] = p;
+		}
+	}
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_buffer);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
