@@ -26,6 +26,10 @@ build/examples/hello: build/window.o examples/hello.c
 	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
 
 
+build/examples/texture: build/window.o build/shader.o examples/texture.c
+	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
+
+
 build/examples/triangle: build/window.o build/shader.o examples/triangle.c
 	$(CC) $(INCLUDE) $(CCFLAGS) -o $@ $^ $(LIBS)
 
