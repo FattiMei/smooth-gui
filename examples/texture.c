@@ -5,9 +5,10 @@
 #include <GLFW/glfw3.h>
 #include "shader.h"
 #include "window.h"
+#include <string.h>
 
 
-#define TEXTURE_WIDTH 100
+#define TEXTURE_WIDTH  100
 #define TEXTURE_HEIGHT 100
 
 
@@ -16,14 +17,37 @@ GLint program;
 GLint u_texture;
 
 
+const float vertices[] = {
+	-1.0f, -1.0f, 0.0f,
+	-1.0f,  1.0f, 0.0f,
+	1.0f, -1.0f, 0.0f,
+	-1.0f,  1.0f, 0.0f,
+	1.0f,  1.0f, 0.0f,
+	1.0f, -1.0f, 0.0f
+};
+
+
+const float texture_vertices[] = {
+	0.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f,
+};
+
+
+unsigned char texture_buffer[TEXTURE_WIDTH * TEXTURE_HEIGHT * 3];
+
+
 GLchar vertex_shader_src[] = R"(
-	attribute vec4 position;
+	attribute vec3 position;
 	attribute vec2 atexCoord;
 
 	varying vec2 texCoord;
 
 	void main() {
-		gl_Position = position;
+		gl_Position = vec4(position, 1.0);
 		texCoord = atexCoord;
 	}
 )";
@@ -36,68 +60,34 @@ GLchar fragment_shader_src[] = R"(
 	uniform sampler2D tex;
 
 	void main() {
-		// gl_FragColor = texture2D(tex, texCoord);
-		// gl_FragColor = vec4(texCoord.x, texCoord.y, 0.2, 1.0);
-		gl_FragColor = vec4(0.2, 0.2, 0.2, 1.0);
+		gl_FragColor = texture2D(tex, texCoord);
 	}
 )";
 
 
 void experiment_init(int width, int height) {
-	unsigned char buffer[TEXTURE_WIDTH][TEXTURE_HEIGHT][3];
-	float vertices[] = {
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
-	};
-
-	(void) buffer;
-
-
 	program = program_load(vertex_shader_src, fragment_shader_src);
-
 
 	glBindAttribLocation(program, 0, "position");
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), vertices);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
 
+	glBindAttribLocation(program, 1, "atexCoord");
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, texture_vertices);
 
-// 	glBindAttribLocation(program, 1, "atexCoord");
-// 	glEnableVertexAttribArray(1);
-// 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), vertices + 3);
-// 
-// 	glGenTextures(1, &texture);
-// 	glBindTexture(GL_TEXTURE_2D, texture);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-// 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-// 
-// 
-// 	for (int row = 0; row < TEXTURE_WIDTH; ++row) {
-// 		for (int col = 0; col < TEXTURE_HEIGHT; ++col) {
-// 			const unsigned char x = 100;
-// 
-// 			buffer[row][col][0] = x;
-// 			buffer[row][col][1] = x;
-// 			buffer[row][col][2] = x;
-// 		}
-// 	}
-// 
-// 	glTexImage2D(
-// 		  GL_TEXTURE_2D
-// 		, 0
-// 		, GL_RGB
-// 		, TEXTURE_WIDTH
-// 		, TEXTURE_HEIGHT
-// 		, 0
-// 		, GL_RGB
-// 		, GL_UNSIGNED_BYTE
-// 		, buffer
-// 	);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	memset(texture_buffer, 200, TEXTURE_WIDTH * TEXTURE_HEIGHT * 3);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_buffer);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 
 	glViewport(0, 0, width, height);
@@ -106,10 +96,6 @@ void experiment_init(int width, int height) {
 
 void experiment_render() {
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, texture);
-	// glUniform1i(glGetUniformLocation(program, "tex"), 0);
 
 	glUseProgram(program);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
