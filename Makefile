@@ -2,6 +2,7 @@ CC      = gcc
 CCFLAGS = -Wall -Werror
 LIBS    = -lm -lglfw -lEGL -lGL
 INCLUDE = -I ./include
+DEFINE  = -DUSE_OPENGLES2
 
 
 sources        = $(wildcard src/*.c)
@@ -35,7 +36,7 @@ build/examples/triangle: build/window.o build/shader.o examples/triangle.c
 
 
 build/%.o: src/%.c
-	$(CC) $(INCLUDE) $(CCFLAGS) -c -o $@ $^ $(LIBS)
+	$(CC) $(INCLUDE) $(DEFINE) $(CCFLAGS) -c -o $@ $^ $(LIBS)
 
 
 .PHONY: clean
